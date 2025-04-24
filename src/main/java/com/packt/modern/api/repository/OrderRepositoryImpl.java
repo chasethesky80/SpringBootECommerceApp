@@ -50,14 +50,14 @@ public class OrderRepositoryImpl implements OrderRepositoryExt {
             throw new ResourceNotFoundException(String.format("There are no items found in customer's cart " +
                     "for customer %s", m.getCustomerId()));
         }
-        final BigDecimal total =  items.stream()
+        final BigDecimal total = items.stream()
                 .map(item -> BigDecimal.valueOf(item.getQuantity()).multiply(item.getPrice()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         final Timestamp orderDate = Timestamp.from(Instant.now());
         em.createNativeQuery(
-                "insert into ecomm.orders (address_id, card_id, customer_id, " +
-                        "order_date, total, status) " +
-                        "values (?, ?, ?, ?, ?, ?)")
+                        "insert into ecomm.orders (address_id, card_id, customer_id, " +
+                                "order_date, total, status) " +
+                                "values (?, ?, ?, ?, ?, ?)")
                 .setParameter(1, m.getAddress().getId())
                 .setParameter(2, m.getCard().getId())
                 .setParameter(3, m.getCustomerId())
@@ -65,5 +65,6 @@ public class OrderRepositoryImpl implements OrderRepositoryExt {
                 .setParameter(5, total)
                 .setParameter(6, Order.StatusEnum.CREATED.getValue())
                 .executeUpdate();
+    }
 
 }
