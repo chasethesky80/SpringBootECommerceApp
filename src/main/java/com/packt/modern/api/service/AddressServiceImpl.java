@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.packt.modern.api.entity.AddressEntity;
 import com.packt.modern.api.model.AddAddressReq;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class AddressServiceImpl implements AddressService {
 
     private ObjectMapper mapper = new ObjectMapper();
