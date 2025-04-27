@@ -1,7 +1,9 @@
 package com.packt.modern.api.repository;
 
+import com.packt.modern.api.entity.CartEntity;
 import com.packt.modern.api.entity.ItemEntity;
 import com.packt.modern.api.entity.OrderEntity;
+import com.packt.modern.api.entity.OrderItemEntity;
 import com.packt.modern.api.exceptions.ResourceNotFoundException;
 import com.packt.modern.api.model.NewOrder;
 import com.packt.modern.api.model.Order;
@@ -14,8 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Transactional
@@ -65,6 +72,22 @@ public class OrderRepositoryImpl implements OrderRepositoryExt {
                 .setParameter(5, total)
                 .setParameter(6, Order.StatusEnum.CREATED.getValue())
                 .executeUpdate();
+        final CartEntity cart = cartRepository.findByCustomerId(UUID.fromString(
+                m.getCustomerId()
+        )).orElseThrow(() -> new ResourceNotFoundException(String.format("Cart not found " +
+                "for given customer id %s", m.getCustomerId())));
+        itemRepository.deleteCartItemJoinById(cart.getItems().stream().map(
+                ItemEntity::getId).collect(Collectors.toList()), cart.getId());
+        final OrderEntity orderEntity = (OrderEntity) em.createNativeQuery("" +
+                "SELECT o.* from ecomm.orders o where o.customer_id = ? and o.order_date >= ?",
+                OrderEntity.class)
+                .setParameter(1, m.getCustomerId())
+                .setParameter(2, OffsetDateTime.ofInstant(orderDate.toInstant(),
+                        ZoneId.of("z")).truncatedTo(ChronoUnit.MICROS)).getSingleResult();
+        orderItemRepository.saveAll(cart.getItems().stream().map(itemEntity ->
+                new OrderItemEntity().setOrderId(orderEntity.getId()).setItemId(
+                        itemEntity.getId())).collect(Collectors.toList()));
+        return Optional.of(orderEntity);
     }
 
 }
