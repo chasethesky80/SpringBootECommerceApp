@@ -19,7 +19,7 @@ public interface CartService {
 
     CartEntity getCartByCustomerId(final String customerId);
 
-    List<ItemEntity> getCartItemsByCustomerId(final String customerId);
+    List<Item> getCartItemsByCustomerId(final String customerId);
 
     Item getCartItemByItemAndCustomerId(final String customerId, final String itemId);
 }
