@@ -6,10 +6,12 @@ import com.packt.modern.api.model.AddCardReq;
 import com.packt.modern.api.repository.CardRepository;
 import com.packt.modern.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
