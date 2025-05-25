@@ -6,10 +6,12 @@ import com.packt.modern.api.model.PaymentReq;
 import com.packt.modern.api.repository.OrderRepository;
 import com.packt.modern.api.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
