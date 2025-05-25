@@ -1,8 +1,8 @@
 package com.packt.modern.api.controller;
 
-import com.packt.modern.api.CartApi;
+import com.packt.modern.api.CardApi;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class CartsController implements CartApi {
+public class CardController implements CardApi {
 }
